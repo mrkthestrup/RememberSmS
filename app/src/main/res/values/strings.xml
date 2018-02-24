@@ -1,5 +1,15 @@
 <resources>
-    <string name="app_name">RememberSms</string>
-    <string name="List_Test">test</string>
-    <string name="Delete">Delete</string>
+    <string name="app_name">RememberSMS</string>
+    <string name="phone">Send to: </string>
+    <string name="message">Message </string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="noRecordsFound">No Records Found</string>
+    <string name="add">ADD</string>
+
+    <string name="list">List of task</string>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_table_manipulation">table_manipulation</string>
 </resources>
