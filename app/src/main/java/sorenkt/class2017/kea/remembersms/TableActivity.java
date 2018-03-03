@@ -1,9 +1,7 @@
 package sorenkt.class2017.kea.remembersms;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +23,7 @@ public class TableActivity extends AppCompatActivity
     EditText messageEditText;
     EditText dateText;
     EditText timeText;
+    EditText nameText;
     static final int DATE_DIALOG_ID = 999;
     static final int TIME_DIALOG_ID = 1;
     private int mYear, mMonth, mDay;
@@ -44,16 +43,20 @@ public class TableActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_manipulation);
 
+        //maybe there is a better way to do this, but for now i works
+        nameText = (EditText) findViewById(R.id.NameEditText);
+        nameText.setVisibility(View.GONE);
+
         limitDate();
         getAllWidgets();
         bindWidgetsWithEvent();
         checkForRequest();
-        testTime();
+        time();
     }
 
     @SuppressWarnings("deprecation")
     @SuppressLint("SimpleDateFormat")
-    private void testTime()
+    private void time()
     {
         calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, mHourOfDay);
@@ -75,7 +78,6 @@ public class TableActivity extends AppCompatActivity
             }
         });
     }
-
 
     @SuppressWarnings("deprecation")
     @SuppressLint("SimpleDateFormat")
@@ -185,6 +187,4 @@ public class TableActivity extends AppCompatActivity
             }
         }
     };
-
-
 }

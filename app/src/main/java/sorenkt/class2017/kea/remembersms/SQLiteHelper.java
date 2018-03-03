@@ -16,6 +16,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
     private static final String DATABASE_NAME = "MyDb.db";
     private static final String TABLE_NAME = "INFORMATION";
     private static final String COLUMN_ID = "ID";
+    private static final String COLUMN_NAME = "NAME";
     private static final String COLUMN_PHONE = "PHONENUMBER";
     private static final String COLUMN_MESSAGE = "MESSAGE";
     private static final String COLUMN_DATE = "DATE";
@@ -34,6 +35,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
         //creating tables
         String CREATE_INFORMATION_TABLE = "CREATE TABLE " + TABLE_NAME + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_NAME + " TEXT," +
                 COLUMN_PHONE + " TEXT," +
                 COLUMN_MESSAGE + " TEXT," +
                 COLUMN_DATE + " TEXT," +
@@ -57,6 +59,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
     {
         database = this.getReadableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, contact.getName());
         values.put(COLUMN_PHONE, contact.getPhoneNumber());
         values.put(COLUMN_MESSAGE, contact.getMessage());
         values.put(COLUMN_DATE, contact.getDate());
@@ -78,10 +81,11 @@ public class SQLiteHelper extends SQLiteOpenHelper
 
                 contactModel = new ContactModel();
                 contactModel.setID(cursor.getString(0));
-                contactModel.setPhoneNumber(cursor.getString(1));
-                contactModel.setMessage(cursor.getString(2));
-                contactModel.setDate(cursor.getString(3));
-                contactModel.setTime(cursor.getString(4));
+                contactModel.setName(cursor.getString(1));
+                contactModel.setPhoneNumber(cursor.getString(2));
+                contactModel.setMessage(cursor.getString(3));
+                contactModel.setDate(cursor.getString(4));
+                contactModel.setTime(cursor.getString(5));
 
                 contacts.add(contactModel);
             }
@@ -96,6 +100,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
     {
         database = this.getReadableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME, contact.getName());
         contentValues.put(COLUMN_PHONE, contact.getPhoneNumber());
         contentValues.put(COLUMN_MESSAGE, contact.getMessage());
         contentValues.put(COLUMN_DATE, contact.getDate());

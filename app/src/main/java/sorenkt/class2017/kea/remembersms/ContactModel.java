@@ -3,11 +3,21 @@ package sorenkt.class2017.kea.remembersms;
 public class ContactModel {
 
     private String ID;
+    private String name;
     private String phoneNumber;
     private String message;
     private String date;
     private String time;
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
     public String getID()
     {

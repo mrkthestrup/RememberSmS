@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Contacts;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.jar.Attributes;
 
 
 public class MainActivity extends AppCompatActivity
@@ -40,12 +43,14 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK)
         {
+            String name = data.getStringExtra(Constants.NAME);
             String phone = data.getStringExtra(Constants.PHONENUMBER);
             String message = data.getStringExtra(Constants.MESSAGE);
             String date = data.getStringExtra(Constants.DATE);
             String time = data.getStringExtra(Constants.TIME);
 
             ContactModel contact = new ContactModel();
+            contact.setName(name);
             contact.setPhoneNumber(phone);
             contact.setMessage(message);
             contact.setDate(date);
@@ -91,9 +96,10 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, Constants.ADD_RECORD);
     }
 
-    private void onUpdateRecord(String phone, String message, String date, String time)
+    private void onUpdateRecord(String name, String phone, String message, String date, String time)
     {
         Intent intent = new Intent(MainActivity.this, TableActivity.class);
+        intent.putExtra(Constants.NAME,name);
         intent.putExtra(Constants.PHONENUMBER, phone);
         intent.putExtra(Constants.MESSAGE, message);
         intent.putExtra(Constants.DATE, date);
@@ -124,12 +130,13 @@ public class MainActivity extends AppCompatActivity
                 holder.fullContrac = (TextView) view.findViewById(R.id.tvFullName);
 
                 view.setTag(contactModel.getID());
+                holder.name = contactModel.getName();
                 holder.phone = contactModel.getPhoneNumber();
                 holder.message = contactModel.getMessage();
                 holder.date = contactModel.getDate();
                 holder.time = contactModel.getTime();
 
-                String information = "Phone number: " + holder.phone + " \n" +
+                String information ="Name: " + holder.name + " < " + holder.phone + " > \n" +
                                     "Message: " + holder.message+ " \n" +
                                     "Date: " + holder.date + " \n" +
                                     "Time: " + holder.time;
@@ -151,7 +158,7 @@ public class MainActivity extends AppCompatActivity
                                 if (which == 0)
                                 {
                                     rowID = view.getTag().toString();
-                                    onUpdateRecord(holder.phone, holder.message, holder.date, holder.time);
+                                    onUpdateRecord(holder.name, holder.phone, holder.message, holder.date, holder.time);
                                 } else
                                     {
                                     AlertDialog.Builder deleteDialogOk = new AlertDialog.Builder(MainActivity.this);

@@ -8,6 +8,7 @@ public class Constants {
     public static final String INSERT = "Save";
     public static final String DELETE = "Delete";
 
+    public static final String NAME = "Name";
     public static final String PHONENUMBER = "PhoneNumber";
     public static final String MESSAGE = "Message";
     public static final String DATE = "Date";

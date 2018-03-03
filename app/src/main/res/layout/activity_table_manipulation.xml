@@ -160,5 +160,16 @@
             android:layout_alignStart="@+id/dateText"
             android:layout_marginTop="16dp"/>
 
+        <EditText
+            android:id="@+id/NameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/phoneEditText"
+            android:layout_toRightOf="@+id/phoneEditText"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"/>
+
 
 </RelativeLayout>
