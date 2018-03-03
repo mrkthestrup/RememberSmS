@@ -99,8 +99,9 @@ public class MainActivity extends AppCompatActivity
     private void onUpdateRecord(String name, String phone, String message, String date, String time)
     {
         Intent intent = new Intent(MainActivity.this, TableActivity.class);
-        intent.putExtra(Constants.NAME,name);
-        intent.putExtra(Constants.PHONENUMBER, phone);
+        //for some reason i have to change phone and name around
+        intent.putExtra(Constants.NAME,phone);
+        intent.putExtra(Constants.PHONENUMBER, name);
         intent.putExtra(Constants.MESSAGE, message);
         intent.putExtra(Constants.DATE, date);
         intent.putExtra(Constants.TIME, time);
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                 holder.date = contactModel.getDate();
                 holder.time = contactModel.getTime();
 
-                String information ="Name: " + holder.name + " < " + holder.phone + " > \n" +
+                String information ="Name: " + holder.name + holder.phone + " \n" +
                                     "Message: " + holder.message+ " \n" +
                                     "Date: " + holder.date + " \n" +
                                     "Time: " + holder.time;

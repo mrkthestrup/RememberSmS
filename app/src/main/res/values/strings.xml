@@ -7,6 +7,12 @@
     <string name="noRecordsFound">No Records Found</string>
     <string name="add">ADD</string>
 
+    <string name="hintformessage">Write your Message here</string>
+    <string name="hintnameEditText">Select Contract</string>
+
+
+
+
     <string name="list">List of task</string>
 
 
