@@ -40,7 +40,6 @@ public class TableActivity extends AppCompatActivity
     EditText dateText;
     EditText timeText;
 
-
     Button saveButton;
 
     static final int DATE_DIALOG_ID = 999;
@@ -69,7 +68,6 @@ public class TableActivity extends AppCompatActivity
 
     public void getPermissionToReadUserContacts()
     {
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED)
         {
@@ -136,8 +134,7 @@ public class TableActivity extends AppCompatActivity
         String contactName = null;
 
         // getting contacts ID
-        Cursor cursorID = getContentResolver().query(uriContact,
-                new String[]{ContactsContract.Contacts._ID},
+        Cursor cursorID = getContentResolver().query(uriContact, new String[]{ContactsContract.Contacts._ID},
                 null, null, null);
 
         if (cursorID.moveToFirst())
@@ -223,7 +220,6 @@ public class TableActivity extends AppCompatActivity
         mHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         mMinute = calendar.get(Calendar.MINUTE);
 
-        //String dateFormat = "dd/MM/yyyy";
         dateText = (EditText) findViewById(R.id.dateText);
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -308,19 +304,30 @@ public class TableActivity extends AppCompatActivity
         }
     }
 
-
+    //on set!
     private TimePickerDialog.OnTimeSetListener mTimeSetLister = new TimePickerDialog.OnTimeSetListener()
     {
-        @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute)
         {
-            mHourOfDay = hourOfDay;
-            mMinute = minute;
-            timeText.setText(new StringBuilder().append(mHourOfDay).append(":").append(mMinute));
-            if (minute <= 9)
+            Calendar datetime = Calendar.getInstance();
+            Calendar c = Calendar.getInstance();
+            datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            datetime.set(Calendar.MINUTE, minute);
+            datetime.set(Calendar.YEAR, mYear);
+            datetime.set(Calendar.MONTH,mMonth);
+            datetime.set(Calendar.DAY_OF_MONTH, mDay);
+
+            if (datetime.getTimeInMillis() >= c.getTimeInMillis())
             {
-                timeText.setText(new StringBuilder().append(mHourOfDay).append(":0").append(mMinute));
+                timeformat = new SimpleDateFormat("HH:mm");
+                timeText.setText(timeformat.format(datetime.getTime()));
+
+            } else
+            {
+                Toast.makeText(getApplicationContext(), "Invalid Time, try again", Toast.LENGTH_LONG).show();
             }
         }
+
+
     };
 }
