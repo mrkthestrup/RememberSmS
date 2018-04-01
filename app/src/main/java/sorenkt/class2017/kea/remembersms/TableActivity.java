@@ -4,12 +4,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +37,8 @@ public class TableActivity extends AppCompatActivity
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private Uri uriContact;
     private String contactID;
+    public static JobScheduler mJobScheduler;
+    private long tid;
 
     EditText nameEditText;
     EditText phoneEditText;
@@ -42,8 +48,9 @@ public class TableActivity extends AppCompatActivity
 
     Button saveButton;
 
-    static final int DATE_DIALOG_ID = 999;
-    static final int TIME_DIALOG_ID = 1;
+    static  final int jobID = 1;
+    private final int DATE_DIALOG_ID = 999;
+    private final int TIME_DIALOG_ID = 1;
     private int mYear, mMonth, mDay;
     private int mHourOfDay, mMinute;
     SimpleDateFormat timeformat;
@@ -58,6 +65,7 @@ public class TableActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_manipulation);
         getPermissionToReadUserContacts();
+        mJobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
         limitDate();
         getAllWidgets();
@@ -148,12 +156,9 @@ public class TableActivity extends AppCompatActivity
 
         if (cursor.moveToFirst())
         {
-            // DISPLAY_NAME = The display name for the contact.
-            // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
         }
 
-        // Using the contact ID now we will get contact phone number
         Cursor cursorPhone = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
 
@@ -272,6 +277,7 @@ public class TableActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 onButtonClick();
+                scheduleJob();
             }
         });
     }
@@ -311,6 +317,7 @@ public class TableActivity extends AppCompatActivity
         {
             Calendar datetime = Calendar.getInstance();
             Calendar c = Calendar.getInstance();
+
             datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
             datetime.set(Calendar.MINUTE, minute);
             datetime.set(Calendar.YEAR, mYear);
@@ -319,6 +326,7 @@ public class TableActivity extends AppCompatActivity
 
             if (datetime.getTimeInMillis() >= c.getTimeInMillis())
             {
+                tid = datetime.getTimeInMillis()-c.getTimeInMillis();
                 timeformat = new SimpleDateFormat("HH:mm");
                 timeText.setText(timeformat.format(datetime.getTime()));
 
@@ -327,7 +335,23 @@ public class TableActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Invalid Time, try again", Toast.LENGTH_LONG).show();
             }
         }
-
-
     };
+
+    public void scheduleJob()
+    {
+        JobInfo.Builder builder = new JobInfo.Builder(jobID, new ComponentName(this, MyService.class));//JobSchedulerService.class.getName()));
+        builder.setPersisted(true); //persist across device reboots
+        builder.setMinimumLatency(tid);
+        builder.setRequiresDeviceIdle(false); // run not only if the device is idle
+        builder.setRequiresCharging(false); // run not only if the device is charging
+
+        PersistableBundle bundle = new PersistableBundle();
+        builder.setExtras(bundle);
+
+        int test = mJobScheduler.schedule(builder.build());
+        if (test <= 0) {
+            //If something goes wrong
+        }
+    }
+
 }

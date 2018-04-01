@@ -1,21 +1,21 @@
 package sorenkt.class2017.kea.remembersms;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.Contacts;
-import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.jar.Attributes;
-
 
 public class MainActivity extends AppCompatActivity
 {
@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity
     android.widget.LinearLayout parentLayout;
     LinearLayout layoutDisplayPeople;
     TextView noRecordsFound;
-    private String rowID = null;
+
+    public static String ROWID = String.valueOf(TableActivity.jobID);
+    private static final int PERMISSION_REQUEST_CODE = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +38,22 @@ public class MainActivity extends AppCompatActivity
         sQLiteHelper = new SQLiteHelper(MainActivity.this);
         bindWidgetsWithEvent();
         displayAllRecords();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.SEND_SMS))
+            {
+
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},PERMISSION_REQUEST_CODE);
+            }
+        }
+
     }
 
     @Override
@@ -59,8 +78,10 @@ public class MainActivity extends AppCompatActivity
             if (requestCode == Constants.ADD_RECORD)
             {
                 sQLiteHelper.insertRecord(contact);
-            } else if (requestCode == Constants.UPDATE_RECORD) {
-                contact.setID(rowID);
+            }
+            else if (requestCode == Constants.UPDATE_RECORD)
+            {
+                contact.setID(ROWID);
                 sQLiteHelper.updateRecord(contact);
             }
             displayAllRecords();
@@ -68,7 +89,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void getAllWidgets() {
+    private void getAllWidgets()
+    {
         btnAddNewRecord = (Button) findViewById(R.id.addNewRecord);
 
         parentLayout = (LinearLayout) findViewById(R.id.parentLayout);
@@ -149,7 +171,6 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onLongClick(View v)
                     {
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setItems(items, new DialogInterface.OnClickListener()
                         {
@@ -158,12 +179,14 @@ public class MainActivity extends AppCompatActivity
                             {
                                 if (which == 0)
                                 {
-                                    rowID = view.getTag().toString();
+                                    ROWID = view.getTag().toString();
                                     onUpdateRecord(holder.name, holder.phone, holder.message, holder.date, holder.time);
+                                    TableActivity.mJobScheduler.cancel(Integer.parseInt(ROWID));
+
                                 } else
                                     {
                                     AlertDialog.Builder deleteDialogOk = new AlertDialog.Builder(MainActivity.this);
-                                    deleteDialogOk.setTitle("Delete Contact?");
+                                    deleteDialogOk.setTitle("Delete Task?");
                                     deleteDialogOk.setPositiveButton("Ok", new DialogInterface.OnClickListener()
                                             {
                                                 @Override
@@ -201,5 +224,4 @@ public class MainActivity extends AppCompatActivity
             noRecordsFound.setVisibility(View.VISIBLE);
         }
     }
-
 }

@@ -68,6 +68,7 @@ public class SQLiteHelper extends SQLiteOpenHelper
         database.close();
     }
 
+
     public ArrayList<ContactModel> getAllRecords()
     {
         database = this.getReadableDatabase();
